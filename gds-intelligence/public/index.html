@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GDS CHRO Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --ink: #0f0e0c;
+  --ink-mid: #5a5751;
+  --ink-faint: #b0ada8;
+  --paper: #f7f4ef;
+  --paper-mid: #edeae3;
+  --paper-dark: #e2ded5;
+  --gold: #c9a84c;
+  --gold-light: #f0e6c8;
+  --green: #2d6a4f;
+  --green-light: #d8eedf;
+  --blue: #1d4e89;
+  --blue-light: #dce8f5;
+  --amber: #9c5700;
+  --amber-light: #fdefd6;
+  --red: #8b2020;
+  --red-light: #fce8e8;
+  /* Anthropic palette */
+  --ant-bg: #f5f4f0;
+  --ant-surface: #ffffff;
+  --ant-border: #e8e5df;
+  --ant-border-strong: #d4d0c8;
+  --ant-purple: #6b4fbb;
+  --ant-purple-light: #eeebf8;
+  --ant-purple-mid: #c4b8e8;
+  --ant-text: #1a1917;
+  --ant-text-mid: #5c5954;
+  --ant-text-faint: #a8a5a0;
+  --ant-accent: #d97757;
+  --ant-accent-light: #fdf0eb;
+  --ant-teal: #1a7a6e;
+  --ant-teal-light: #e0f4f1;
+  --june-bg: #fff8ee;
+  --june-border: #f0c070;
+  --june-text: #7a4a00;
+  --june-accent: #e8a020;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--ant-bg);
+  color: var(--ant-text);
+  min-height: 100vh;
+}
+
+/* ── TOP NAV BAR ── */
+.topbar {
+  background: var(--ant-surface);
+  border-bottom: 1px solid var(--ant-border);
+  padding: 0 32px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-logo {
+  width: 28px;
+  height: 28px;
+  background: var(--ant-purple);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.topbar-logo svg { width: 16px; height: 16px; }
+
+.topbar-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ant-text);
+  letter-spacing: -0.1px;
+}
+
+.topbar-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--ant-border-strong);
+}
+
+.topbar-product {
+  font-size: 13px;
+  color: var(--ant-text-mid);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* June urgency toggle */
+.june-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--june-bg);
+  border: 1px solid var(--june-border);
+  border-radius: 20px;
+  padding: 5px 12px 5px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  user-select: none;
+}
+
+.june-toggle.active {
+  background: var(--june-accent);
+  border-color: var(--june-accent);
+}
+
+.june-toggle-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--june-accent);
+  transition: background 0.2s;
+}
+
+.june-toggle.active .june-toggle-dot {
+  background: #fff;
+}
+
+.june-toggle-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--june-text);
+  transition: color 0.2s;
+}
+
+.june-toggle.active .june-toggle-label {
+  color: #fff;
+}
+
+/* ── HERO SECTION ── */
+.hero {
+  background: var(--ant-surface);
+  border-bottom: 1px solid var(--ant-border);
+  padding: 40px 48px 36px;
+}
+
+.hero-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ant-purple);
+  margin-bottom: 14px;
+}
+
+.hero-tag-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ant-purple);
+}
+
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 38px;
+  font-weight: 400;
+  color: var(--ant-text);
+  line-height: 1.12;
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 15px;
+  color: var(--ant-text-mid);
+  font-weight: 300;
+  line-height: 1.6;
+  max-width: 560px;
+}
+
+/* ── SEARCH BAR ── */
+.search-zone {
+  background: var(--ant-surface);
+  border-bottom: 1px solid var(--ant-border);
+  padding: 24px 48px;
+}
+
+.search-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.apikey-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.field-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ant-text-mid);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+
+
+.search-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  color: var(--ant-text);
+  background: var(--ant-surface);
+  border: 1.5px solid var(--ant-border-strong);
+  border-radius: 8px;
+  padding: 12px 16px;
+  outline: none;
+  transition: border-color 0.2s;
+  max-width: 500px;
+}
+
+.search-input:focus { border-color: var(--ant-purple); }
+.search-input::placeholder { color: var(--ant-text-faint); }
+
+.btn-analyse {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background: var(--ant-purple);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 22px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.btn-analyse:hover { background: #5a3faa; }
+.btn-analyse:active { transform: scale(0.98); }
+.btn-analyse:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+  align-items: center;
+}
+
+.chips-label {
+  font-size: 11px;
+  color: var(--ant-text-faint);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.chip {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: var(--ant-text-mid);
+  background: var(--ant-bg);
+  border: 1px solid var(--ant-border-strong);
+  border-radius: 100px;
+  padding: 4px 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.chip:hover {
+  border-color: var(--ant-purple);
+  color: var(--ant-purple);
+  background: var(--ant-purple-light);
+}
+
+/* ── CONTENT AREA ── */
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 48px 80px;
+}
+
+/* loading / error / empty state */
+.state-idle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.idle-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: var(--ant-purple-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.idle-icon svg { width: 28px; height: 28px; color: var(--ant-purple); }
+
+.idle-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--ant-text);
+  margin-bottom: 8px;
+}
+
+.idle-sub {
+  font-size: 14px;
+  color: var(--ant-text-mid);
+  font-weight: 300;
+  line-height: 1.6;
+  max-width: 360px;
+}
+
+.loading-state {
+  display: none;
+  align-items: center;
+  gap: 14px;
+  padding: 60px 0;
+  color: var(--ant-text-mid);
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.loading-state.visible { display: flex; justify-content: center; }
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--ant-border-strong);
+  border-top-color: var(--ant-purple);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.error-box {
+  display: none;
+  padding: 12px 16px;
+  background: var(--red-light);
+  border-left: 3px solid var(--red);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--red);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.error-box.visible { display: block; }
+
+/* ── RESULTS LAYOUT ── */
+.results {
+  display: none;
+  animation: fadeUp 0.4s ease;
+}
+
+.results.visible { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Fit score card stays at top, full-width */
+.fit-card {
+  background: var(--ant-surface);
+  border: 1px solid var(--ant-border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.fit-top {
+  padding: 28px 32px 22px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  border-bottom: 1px solid var(--ant-border);
+}
+
+.fit-company {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ant-text);
+  line-height: 1.2;
+}
+
+.fit-verdict {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 3px;
+  margin-top: 8px;
+}
+
+.v-ideal { background: var(--green-light); color: var(--green); }
+.v-good  { background: var(--blue-light);  color: var(--blue); }
+.v-weak  { background: var(--amber-light); color: var(--amber); }
+.v-nofit { background: var(--red-light);   color: var(--red); }
+
+.score-circle {
+  flex-shrink: 0;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2.5px solid transparent;
+}
+
+.sc-ideal { background: var(--green-light); border-color: var(--green); }
+.sc-good  { background: var(--blue-light);  border-color: var(--blue); }
+.sc-weak  { background: var(--amber-light); border-color: var(--amber); }
+.sc-nofit { background: var(--red-light);   border-color: var(--red); }
+
+.score-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 30px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.score-denom {
+  font-size: 11px;
+  font-weight: 300;
+  opacity: 0.6;
+  margin-top: 2px;
+}
+
+.num-ideal { color: var(--green); }
+.num-good  { color: var(--blue); }
+.num-weak  { color: var(--amber); }
+.num-nofit { color: var(--red); }
+
+.score-table { width: 100%; border-collapse: collapse; }
+.score-table tr { border-bottom: 1px solid var(--ant-border); }
+.score-table tr:last-child { border-bottom: none; }
+.score-table td { padding: 13px 32px; font-size: 13px; vertical-align: middle; }
+
+.td-label { color: var(--ant-text-mid); width: 50%; }
+.td-bar   { width: 30%; padding-left: 0 !important; }
+
+.bar-track {
+  height: 4px;
+  background: var(--ant-border-strong);
+  border-radius: 100px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 100px;
+  transition: width 0.7s ease;
+}
+
+.bf-ideal { background: var(--green); }
+.bf-good  { background: var(--blue); }
+.bf-weak  { background: var(--amber); }
+.bf-nofit { background: var(--red); }
+
+.td-score {
+  text-align: right;
+  color: var(--ant-text);
+  font-weight: 500;
+  font-size: 13px;
+  white-space: nowrap;
+  width: 20%;
+}
+
+.td-score span { color: var(--ant-text-faint); font-weight: 300; }
+
+.total-row td {
+  border-top: 2px solid var(--ant-border-strong) !important;
+  background: var(--ant-bg);
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+
+.total-label {
+  font-weight: 500 !important;
+  color: var(--ant-text) !important;
+  font-size: 14px !important;
+}
+
+.total-score {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px !important;
+  font-weight: 400 !important;
+}
+
+/* ── THREE PANEL LAYOUT ── */
+.panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.panel {
+  background: var(--ant-surface);
+  border: 1px solid var(--ant-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--ant-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ant-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.panel-icon.purple { background: var(--ant-purple-light); color: var(--ant-purple); }
+.panel-icon.teal   { background: var(--ant-teal-light);   color: var(--ant-teal); }
+.panel-icon.amber  { background: var(--amber-light);       color: var(--amber); }
+
+.panel-icon svg { width: 13px; height: 13px; }
+
+.panel-badge {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ant-text-faint);
+  background: var(--ant-bg);
+  border: 1px solid var(--ant-border-strong);
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+.panel-body { padding: 18px 22px; }
+
+.panel-loading {
+  padding: 32px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--ant-text-faint);
+  font-size: 13px;
+}
+
+/* ── BUYER BREAKDOWN PANEL ── */
+.buyer-section { margin-bottom: 18px; }
+.buyer-section:last-child { margin-bottom: 0; }
+
+.buyer-tier {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.buyer-tier-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ant-text-mid);
+}
+
+.buyer-tier-line {
+  flex: 1;
+  height: 1px;
+  background: var(--ant-border);
+}
+
+.title-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.title-chip {
+  font-size: 11.5px;
+  color: var(--ant-purple);
+  background: var(--ant-purple-light);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-weight: 500;
+}
+
+.intent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-bottom: 5px;
+  font-size: 12px;
+  color: var(--ant-text-mid);
+  line-height: 1.5;
+}
+
+.intent-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ant-accent);
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+/* ── MESSAGE TEMPLATES ── */
+.msg-block { margin-bottom: 16px; }
+.msg-block:last-child { margin-bottom: 0; }
+
+.msg-tier-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.msg-tier-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.dot-clevel { background: var(--ant-purple); }
+.dot-mkt    { background: var(--ant-teal); }
+.dot-sales  { background: var(--amber); }
+
+.msg-tier-name {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ant-text-mid);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.msg-card {
+  background: var(--ant-bg);
+  border: 1px solid var(--ant-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  position: relative;
+}
+
+.msg-subject {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ant-text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 5px;
+}
+
+.msg-body {
+  font-size: 12.5px;
+  color: var(--ant-text);
+  line-height: 1.65;
+}
+
+.june-stripe {
+  display: none;
+  margin-top: 8px;
+  background: var(--june-bg);
+  border: 1px solid var(--june-border);
+  border-radius: 5px;
+  padding: 6px 10px;
+  font-size: 11.5px;
+  color: var(--june-text);
+  line-height: 1.5;
+}
+
+.june-active .june-stripe { display: block; }
+
+.msg-copy-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ant-text-faint);
+  background: var(--ant-surface);
+  border: 1px solid var(--ant-border-strong);
+  border-radius: 4px;
+  padding: 3px 7px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.msg-copy-btn:hover {
+  color: var(--ant-purple);
+  border-color: var(--ant-purple);
+}
+
+/* ── CONTACTS PANEL ── */
+.contact-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--ant-border);
+}
+
+.contact-card:last-child { border-bottom: none; }
+
+.contact-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.avatar-purple { background: var(--ant-purple-light); color: var(--ant-purple); }
+.avatar-teal   { background: var(--ant-teal-light);   color: var(--ant-teal); }
+.avatar-amber  { background: var(--amber-light);       color: var(--amber); }
+
+.contact-info { flex: 1; min-width: 0; }
+
+.contact-name {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ant-text);
+  margin-bottom: 1px;
+}
+
+.contact-title {
+  font-size: 12px;
+  color: var(--ant-text-mid);
+  margin-bottom: 4px;
+}
+
+.contact-signals {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.signal-chip {
+  font-size: 10.5px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.sig-warm  { background: var(--ant-accent-light); color: #a04020; }
+.sig-cold  { background: var(--ant-purple-light); color: var(--ant-purple); }
+.sig-event { background: var(--ant-teal-light);   color: var(--ant-teal); }
+
+.contact-reach {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.reach-btn {
+  font-size: 10.5px;
+  font-weight: 500;
+  padding: 4px 9px;
+  border-radius: 5px;
+  border: 1px solid var(--ant-border-strong);
+  background: var(--ant-surface);
+  color: var(--ant-text-mid);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.reach-btn:hover {
+  border-color: var(--ant-purple);
+  color: var(--ant-purple);
+  background: var(--ant-purple-light);
+}
+
+.reach-btn.primary {
+  background: var(--ant-purple);
+  color: #fff;
+  border-color: var(--ant-purple);
+}
+
+.reach-btn.primary:hover { background: #5a3faa; }
+
+/* ── JUNE BANNER ── */
+.june-banner {
+  display: none;
+  background: var(--june-bg);
+  border: 1px solid var(--june-border);
+  border-radius: 10px;
+  padding: 14px 20px;
+  margin-bottom: 20px;
+  align-items: center;
+  gap: 12px;
+}
+
+.june-banner.visible { display: flex; }
+
+.june-banner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--june-accent);
+  flex-shrink: 0;
+  animation: pulse 1.5s ease infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.june-banner-text {
+  font-size: 13px;
+  color: var(--june-text);
+  line-height: 1.5;
+}
+
+.june-banner-text strong { font-weight: 500; }
+
+/* ── RESULT FOOTER ── */
+.result-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn-again {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--ant-text-mid);
+  background: none;
+  border: 1px solid var(--ant-border-strong);
+  border-radius: 6px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-again:hover { border-color: var(--ant-text-mid); color: var(--ant-text); }
+
+.result-date {
+  font-size: 11px;
+  color: var(--ant-text-faint);
+  letter-spacing: 0.06em;
+}
+
+/* ── SITE FOOTER ── */
+.site-footer {
+  text-align: center;
+  padding: 24px;
+  font-size: 11px;
+  color: var(--ant-text-faint);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-top: 1px solid var(--ant-border);
+}
+
+.unknown-banner {
+  display: none;
+  padding: 10px 32px;
+  font-size: 12px;
+  color: var(--amber);
+  background: var(--amber-light);
+  border-bottom: 1px solid #f5d9a0;
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 2L13 5.5V10.5L8 14L3 10.5V5.5L8 2Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+        <circle cx="8" cy="8" r="2" fill="white"/>
+      </svg>
+    </div>
+    <span class="topbar-name">GDS Group</span>
+    <div class="topbar-divider"></div>
+    <span class="topbar-product">CHRO Intelligence</span>
+  </div>
+  <div class="topbar-right">
+    <div class="june-toggle" id="juneToggle" onclick="toggleJune()">
+      <div class="june-toggle-dot"></div>
+      <span class="june-toggle-label">☀ June urgency</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag"><div class="hero-tag-dot"></div>Sponsorship Command Centre</div>
+    <h1>CHRO Summit<br>Fit Score &amp; Outreach Intelligence</h1>
+    <p>Qualify any HR tech vendor in seconds. Get buyer breakdowns, intent signals, ready-to-send messages, and a full map of the buyer titles they sell into. No login required.</p>
+  </div>
+</div>
+
+<!-- SEARCH BAR -->
+<div class="search-zone">
+  <div class="search-inner">
+<div class="search-row">
+      <input type="text" class="search-input" id="coInput" placeholder="Enter company name, e.g. Phenom, Gem, Lattice..." />
+      <button class="btn-analyse" id="scoreBtn" onclick="runScore()">Analyse company →</button>
+    </div>
+    <div class="chips">
+      <span class="chips-label">Try</span>
+      <button class="chip" onclick="quick('Phenom')">Phenom</button>
+      <button class="chip" onclick="quick('Gem')">Gem</button>
+      <button class="chip" onclick="quick('Workable')">Workable</button>
+      <button class="chip" onclick="quick('TerryBerry')">TerryBerry</button>
+      <button class="chip" onclick="quick('Checkr')">Checkr</button>
+      <button class="chip" onclick="quick('Lattice')">Lattice</button>
+      <button class="chip" onclick="quick('Rippling')">Rippling</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <div id="idleState" class="state-idle">
+    <div class="idle-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+    </div>
+    <div class="idle-title">Enter a company to begin</div>
+    <div class="idle-sub">Paste any HR tech or services vendor name. We'll score their summit fit and generate outreach intelligence in seconds.</div>
+  </div>
+
+  <div class="loading-state" id="loadingEl">
+    <div class="spinner"></div>
+    <span id="loadingText">Analysing company fit…</span>
+  </div>
+
+  <div class="error-box" id="errorEl"></div>
+
+  <!-- RESULTS -->
+  <div class="results" id="resultEl">
+
+    <!-- June urgency banner -->
+    <div class="june-banner" id="juneBanner">
+      <div class="june-banner-dot"></div>
+      <div class="june-banner-text"><strong>June urgency active.</strong> All messages below include a summit deadline hook and best-of-year pricing angle. Natural scarcity, not a sales alarm.</div>
+    </div>
+
+    <!-- FIT SCORE CARD (unchanged from original) -->
+    <div class="fit-card">
+      <div class="fit-top">
+        <div>
+          <div class="fit-company" id="rCompany"></div>
+          <div class="fit-verdict" id="rVerdict"></div>
+        </div>
+        <div class="score-circle" id="rCircle">
+          <div class="score-num" id="rNum">—</div>
+          <div class="score-denom">/ 100</div>
+        </div>
+      </div>
+      <div id="unknownBanner" class="unknown-banner">
+        ⚠ This company wasn't clearly recognised — score is an estimate. Try adding a short description.
+      </div>
+      <table class="score-table" id="rTable"></table>
+    </div>
+
+    <!-- LEFT + RIGHT PANELS -->
+    <div class="panels">
+
+      <!-- LEFT: Buyer breakdown + messages -->
+      <div class="panel" id="leftPanel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-icon purple">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>
+              </svg>
+            </div>
+            Buyer breakdown &amp; outreach
+          </div>
+          <div class="panel-badge">Messages ready</div>
+        </div>
+        <div class="panel-body" id="leftBody">
+          <div class="panel-loading">
+            <div class="spinner"></div>
+            <span>Generating buyer intelligence…</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Buyer titles -->
+      <div class="panel" id="rightPanel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-icon teal">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </div>
+            Buyer titles they target
+          </div>
+          <div class="panel-badge">Who they sell to</div>
+        </div>
+        <div class="panel-body" id="rightBody">
+          <div class="panel-loading">
+            <div class="spinner"></div>
+            <span>Mapping buyer titles…</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="result-footer">
+      <button class="btn-again" onclick="resetTool()">← Analyse another company</button>
+      <div class="result-date" id="rDate"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">GDS Group · CHRO Summit · Sponsorship Intelligence · Powered by Claude</footer>
+
+<script>
+let juneMode = false;
+let currentCompany = '';
+
+const MSGS_FIT = ['Analysing company fit…','Evaluating buyer alignment…','Checking enterprise signals…','Calibrating against benchmarks…','Finalising score…'];
+const MSGS_LEFT = ['Mapping buyer titles…','Generating intent signals…','Writing outreach messages…','Personalising for role…','Almost there…'];
+const MSGS_RIGHT = ['Searching LinkedIn signals…','Identifying key contacts…','Assessing seniority…','Cross-referencing sources…','Building contact list…'];
+let msgTimers = [];
+
+function toggleJune() {
+  juneMode = !juneMode;
+  const toggle = document.getElementById('juneToggle');
+  toggle.classList.toggle('active', juneMode);
+  const banner = document.getElementById('juneBanner');
+  if (document.getElementById('resultEl').classList.contains('visible')) {
+    banner.classList.toggle('visible', juneMode);
+  }
+  // Refresh message blocks with/without June stripe
+  document.querySelectorAll('.june-stripe').forEach(el => {
+    el.style.display = juneMode ? 'block' : 'none';
+  });
+}
+
+async function callClaude(systemPrompt, userPrompt, maxTok = 900) {
+  const r = await fetch('/api/claude', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ system: systemPrompt, prompt: userPrompt, maxTokens: maxTok })
+  });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error || 'Server error');
+  return data.text || '';
+}
+
+function extractJSON(raw) {
+  const s = raw.indexOf('{'), e = raw.lastIndexOf('}');
+  if (s === -1 || e === -1) return null;
+  return raw.slice(s, e + 1);
+}
+
+function tier(s) {
+  if (s >= 90) return 'ideal';
+  if (s >= 70) return 'good';
+  if (s >= 40) return 'weak';
+  return 'nofit';
+}
+
+function verdictLabel(s) {
+  if (s >= 90) return 'Ideal Sponsor';
+  if (s >= 70) return 'Good Fit';
+  if (s >= 40) return 'Weak Fit';
+  return 'No Fit';
+}
+
+function cycleMsgs(msgs, elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  let i = 0;
+  el.textContent = msgs[0];
+  const t = setInterval(() => { i = (i + 1) % msgs.length; el.textContent = msgs[i]; }, 2200);
+  msgTimers.push(t);
+  return t;
+}
+
+function clearTimers() { msgTimers.forEach(clearInterval); msgTimers = []; }
+
+function showError(msg) {
+  clearTimers();
+  document.getElementById('loadingEl').classList.remove('visible');
+  const el = document.getElementById('errorEl');
+  el.textContent = 'Error: ' + msg;
+  el.classList.add('visible');
+  document.getElementById('scoreBtn').disabled = false;
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = orig; }, 1400);
+  });
+}
+
+function renderFitCard(data) {
+  const score = parseInt(data.total_score, 10);
+  const t = tier(score);
+  const fc = 'bf-' + t;
+
+  document.getElementById('rCompany').textContent = data.company;
+  const v = document.getElementById('rVerdict');
+  v.textContent = verdictLabel(score);
+  v.className = 'fit-verdict v-' + t;
+
+  const circle = document.getElementById('rCircle');
+  circle.className = 'score-circle sc-' + t;
+  const num = document.getElementById('rNum');
+  num.textContent = score;
+  num.className = 'score-num num-' + t;
+
+  const rows = [
+    { label: 'Buyer alignment',            score: data.buyer_alignment,   max: 30 },
+    { label: 'Product relevance',          score: data.product_relevance, max: 25 },
+    { label: 'Company maturity & budget',  score: data.company_maturity,  max: 20 },
+    { label: 'Enterprise focus',           score: data.enterprise_focus,  max: 15 },
+    { label: 'Event marketing likelihood', score: data.event_likelihood,  max: 10 },
+  ];
+
+  document.getElementById('rTable').innerHTML = rows.map(r => `
+    <tr>
+      <td class="td-label">${r.label}</td>
+      <td class="td-bar">
+        <div class="bar-track">
+          <div class="bar-fill ${fc}" style="width:${Math.round((r.score/r.max)*100)}%"></div>
+        </div>
+      </td>
+      <td class="td-score">${r.score} <span>/ ${r.max}</span></td>
+    </tr>
+  `).join('') + `
+    <tr class="total-row">
+      <td class="td-label total-label">Total fit score</td>
+      <td class="td-bar"></td>
+      <td class="td-score total-score num-${t}">${score} <span style="font-family:'DM Sans';font-size:13px;font-weight:300;">/ 100</span></td>
+    </tr>
+  `;
+
+  document.getElementById('unknownBanner').style.display = data._warning ? 'block' : 'none';
+  const now = new Date();
+  document.getElementById('rDate').textContent = now.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }).toUpperCase();
+}
+
+function renderLeftPanel(data) {
+  const JUNE_SNIPPETS = {
+    clevel: "P.S. We're finalising our last few vendor partner slots for the June summit — pricing is at its best right now, and once we close the cohort, we close it. Worth knowing if the timing works.",
+    marketing: "One more thing — we're in the final stretch before our early June summit and offering our most competitive package of the year to close the remaining spots. Happy to share details on that too.",
+    sales: "Worth flagging: our June CHRO summit is a few weeks out and we're down to the last few partner slots at our best price of the year. Timing might be right for a quick decision."
+  };
+
+  let html = '';
+
+  // C-Level
+  html += `
+  <div class="buyer-section">
+    <div class="buyer-tier">
+      <div class="msg-tier-dot dot-clevel"></div>
+      <div class="buyer-tier-label">C-Level</div>
+      <div class="buyer-tier-line"></div>
+    </div>
+    <div class="title-chips">
+      ${(data.clevel_titles || []).map(t => `<div class="title-chip">${t}</div>`).join('')}
+    </div>
+    ${(data.clevel_signals || []).map(s => `<div class="intent-row"><div class="intent-dot"></div><span>${s}</span></div>`).join('')}
+    <div class="msg-block" style="margin-top:10px">
+      <div class="msg-card" id="msgCLevel">
+        <div class="msg-subject">Cold email — C-Level</div>
+        <div class="msg-body">${data.clevel_email || ''}</div>
+        <div class="june-stripe" style="display:${juneMode?'block':'none'}">${JUNE_SNIPPETS.clevel}</div>
+        <button class="msg-copy-btn" onclick="copyMsgCard('msgCLevel', this)">Copy</button>
+      </div>
+    </div>
+  </div>`;
+
+  // Marketing
+  html += `
+  <div class="buyer-section">
+    <div class="buyer-tier">
+      <div class="msg-tier-dot dot-mkt"></div>
+      <div class="buyer-tier-label">Marketing</div>
+      <div class="buyer-tier-line"></div>
+    </div>
+    <div class="title-chips">
+      ${(data.mkt_titles || []).map(t => `<div class="title-chip">${t}</div>`).join('')}
+    </div>
+    ${(data.mkt_signals || []).map(s => `<div class="intent-row"><div class="intent-dot"></div><span>${s}</span></div>`).join('')}
+    <div class="msg-block" style="margin-top:10px">
+      <div class="msg-card" id="msgMkt">
+        <div class="msg-subject">Cold email — Marketing</div>
+        <div class="msg-body">${data.mkt_email || ''}</div>
+        <div class="june-stripe" style="display:${juneMode?'block':'none'}">${JUNE_SNIPPETS.marketing}</div>
+        <button class="msg-copy-btn" onclick="copyMsgCard('msgMkt', this)">Copy</button>
+      </div>
+    </div>
+  </div>`;
+
+  // Sales
+  html += `
+  <div class="buyer-section">
+    <div class="buyer-tier">
+      <div class="msg-tier-dot dot-sales"></div>
+      <div class="buyer-tier-label">Sales</div>
+      <div class="buyer-tier-line"></div>
+    </div>
+    <div class="title-chips">
+      ${(data.sales_titles || []).map(t => `<div class="title-chip">${t}</div>`).join('')}
+    </div>
+    ${(data.sales_signals || []).map(s => `<div class="intent-row"><div class="intent-dot"></div><span>${s}</span></div>`).join('')}
+    <div class="msg-block" style="margin-top:10px">
+      <div class="msg-card" id="msgSales">
+        <div class="msg-subject">Cold email — Sales</div>
+        <div class="msg-body">${data.sales_email || ''}</div>
+        <div class="june-stripe" style="display:${juneMode?'block':'none'}">${JUNE_SNIPPETS.sales}</div>
+        <button class="msg-copy-btn" onclick="copyMsgCard('msgSales', this)">Copy</button>
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('leftBody').innerHTML = html;
+}
+
+function copyMsgCard(cardId, btn) {
+  const card = document.getElementById(cardId);
+  const body = card.querySelector('.msg-body').textContent;
+  const june = card.querySelector('.june-stripe');
+  const juneText = (june && june.style.display !== 'none') ? '\n\n' + june.textContent : '';
+  copyText(body + juneText, btn);
+}
+
+// Buyer titles panel — rendered by renderRightPanel from Claude API data
+
+function renderRightPanel(data) {
+  const groups = [
+    { key: 'primary',    label: 'Primary buyers',    bg: '#EEEDFE', fg: '#3C3489', border: '#C4B8E8', dot: '#6B4FBB' },
+    { key: 'secondary',  label: 'Secondary buyers',  bg: '#E0F4F1', fg: '#0F6E56', border: '#9FD8D0', dot: '#1A7A6E' },
+    { key: 'influenced', label: 'Influenced / involved', bg: '#FAEEDA', fg: '#854F0B', border: '#F5C87A', dot: '#E8A020' }
+  ];
+
+  const why = data.why || '';
+  const gdsMatch = data.gds_match || '';
+
+  let parts = [];
+
+  if (why) {
+    parts.push(`<div style="margin-bottom:16px;padding:11px 14px;background:#F5F4F0;border-radius:8px;border:1px solid #E8E5DF">
+      <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#A8A5A0;margin-bottom:5px">Why they buy</div>
+      <div style="font-size:12.5px;color:#1A1917;line-height:1.6">${why}</div>
+    </div>`);
+  }
+
+  groups.forEach(function(g) {
+    const titles = data[g.key] || [];
+    if (!titles.length) return;
+    const chips = titles.map(function(t) {
+      return `<div style="display:inline-block;padding:4px 10px;background:${g.bg};border:1px solid ${g.border};border-radius:4px;font-size:12px;font-weight:500;color:${g.fg};margin:3px 3px 3px 0">${t}</div>`;
+    }).join('');
+    parts.push(`<div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <div style="width:7px;height:7px;border-radius:50%;background:${g.dot};flex-shrink:0"></div>
+        <div style="font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:#5C5954">${g.label}</div>
+        <div style="flex:1;height:1px;background:#E8E5DF"></div>
+        <div style="font-size:11px;color:#A8A5A0">${titles.length}</div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap">${chips}</div>
+    </div>`);
+  });
+
+  if (gdsMatch) {
+    parts.push(`<div style="margin-top:4px;padding:11px 14px;background:#E0F4F1;border-radius:8px;border:1px solid #9FD8D0">
+      <div style="font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:#1A7A6E;margin-bottom:5px">GDS relevance</div>
+      <div style="font-size:12.5px;color:#0F6E56;line-height:1.6">${gdsMatch}</div>
+    </div>`);
+  }
+
+  if (!parts.length) {
+    parts.push('<div style="font-size:13px;color:#A8A5A0;text-align:center;padding:20px 0">No buyer title data returned.</div>');
+  }
+
+  document.getElementById('rightBody').innerHTML = parts.join('');
+}
+
+
+
+async function runScore() {
+  const raw = document.getElementById('coInput').value.trim();
+
+  const STRIP_WORDS = ['employee','training','platform','software','solution','solutions','tool','tools','system','systems','hr','hris','hcm','ats','lms','ai','technology','technologies','tech','cloud','app','application','applications','service','services','management','analytics','intelligence','performance','engagement','recruiting','recruitment','talent','acquisition','learning','development','workforce','people','experience','payroll','benefits','compensation','rewards','recognition','onboarding','culture','diversity','equity','inclusion','dei','wellbeing','wellness','productivity','scheduling','time','tracking','compliance','automation','intelligence','insights','data','reporting','dashboard','enterprise','business','company','inc','llc','ltd','group','global','international','network','hub','suite','pro','plus','360'];
+  const words = raw.split(/\s+/);
+  const coreWords = words.filter(w => !STRIP_WORDS.includes(w.toLowerCase().replace(/[^a-z0-9]/g,'')));
+  const company = (coreWords.length > 0 ? coreWords : words).join(' ').trim();
+  currentCompany = company;
+
+  if (!company) { document.getElementById('coInput').focus(); return; }
+
+  document.getElementById('scoreBtn').disabled = true;
+  document.getElementById('idleState').style.display = 'none';
+  document.getElementById('resultEl').classList.remove('visible');
+  document.getElementById('errorEl').classList.remove('visible');
+  document.getElementById('loadingEl').classList.add('visible');
+  document.getElementById('leftBody').innerHTML = '<div class="panel-loading"><div class="spinner"></div><span>Generating buyer intelligence…</span></div>';
+  document.getElementById('rightBody').innerHTML = '<div class="panel-loading"><div class="spinner"></div><span>Mapping buyer titles…</span></div>';
+
+  cycleMsgs(MSGS_FIT, 'loadingText');
+
+  const FIT_SYSTEM = `You are a sponsorship analyst at GDS Group. You score companies on 5 sub-dimensions and sum them precisely. You NEVER round to a convenient number. Every company earns a unique score reflecting its exact characteristics. Avoid scores like 75, 80, 85, 88, 90 unless sub-scores genuinely sum to that. Respond with ONLY a valid JSON object. No explanation, no preamble, no markdown.`;
+
+  const fitPrompt = `Score "${company}" for CHRO Summit sponsorship fit.
+
+IMPORTANT: Score each sub-dimension independently, then sum. Do NOT start from a round number and work backwards.
+
+Sub-dimensions:
+1. buyer_alignment (0-30): Is the CHRO/CPO the PRIMARY economic buyer of this product?
+   28-30 = CHRO is sole/primary buyer (TA, L&D, recognition, people analytics, EX)
+   22-27 = CHRO is primary, shares with IT or Finance
+   14-21 = HR is significant but secondary buyer
+   7-13 = HR is one of many buyers, not primary
+   0-6 = HR is not a meaningful buyer
+
+2. product_relevance (0-25): How purpose-built for HR workflows?
+   23-25 = Core HR tech (recruiting, talent, learning, engagement, compensation, DEI)
+   17-22 = Relevant to HR, also serves other functions
+   9-16 = Tangential to HR
+   0-8 = Not HR-relevant
+
+3. company_maturity (0-20): Can they afford ~$40K sponsorship?
+   18-20 = Public or Series D+, clearly can afford it
+   13-17 = Series B/C, funded growth stage
+   7-12 = Series A or early, uncertain
+   0-6 = Pre-seed, tiny, or bootstrapped
+
+4. enterprise_focus (0-15): Sells to large enterprises (500+ employees)?
+   13-15 = Primarily enterprise
+   9-12 = Mix of mid-market and enterprise
+   4-8 = Primarily SMB with some mid-market
+   0-3 = SMB-only
+
+5. event_likelihood (0-10): Attends/sponsors SHRM, UNLEASH, HR Tech Conference?
+   9-10 = Regular sponsor or exhibitor
+   6-8 = Some HR event presence
+   3-5 = Limited presence
+   0-2 = No known event marketing
+
+CALIBRATION ANCHORS (use these to position "${company}" precisely):
+Phenom=100, TerryBerry=100, Workable=95, Paradox=92, iCIMS=93, Dayforce=91, SmashFly=91, Greenhouse=89, Eightfold AI=88, Lever=86, LinkedIn Talent Solutions=84, Culture Amp=84, Beamery=87, Lattice=83, Ceridian=80, ADP=82, 15Five=81, Rippling=79, Docebo=79, Fuel50=78, UKG=77, Cornerstone=76, Paychex=74, Joveo=72, HiBob=71, SAP SuccessFactors=68, Workday=65, BambooHR=63, Robert Half=57, Gusto=58.
+
+SCORING RULES:
+- Sum sub-scores exactly. If they sum to 83, return 83. If 91, return 91.
+- Do NOT adjust the total to a rounder number.
+- Each company should land on a score that reflects its unique position — no two similar companies should share the same score unless their sub-scores genuinely match.
+
+Reply with ONLY this JSON (no markdown, no backticks, no explanation):
+{"company":"${company}","total_score":0,"buyer_alignment":0,"product_relevance":0,"company_maturity":0,"enterprise_focus":0,"event_likelihood":0}`;
+
+  const LEFT_SYSTEM = `You are a B2B sales strategist for GDS Group, which runs invitation-only CHRO forums and Insight Summits where senior enterprise HR leaders gather. You help salespeople craft hyper-targeted outreach to HR tech vendors. Always return ONLY valid JSON. No markdown. No explanation.`;
+
+  const leftPrompt = `Company: "${company}" — an HR tech or HR services vendor.
+
+Return JSON with buyer intelligence and outreach messages for 3 title tiers. Format:
+{
+  "clevel_titles": ["CHRO", "CPO", "CEO"],
+  "clevel_signals": ["Intent signal 1 specific to this company", "Intent signal 2"],
+  "clevel_email": "5-sentence cold email to a C-Level exec at ${company}. Open with their strategic challenge. Frame GDS CHRO forums as direct access to enterprise HR decision makers. Soft calendar ask. Sound executive-to-executive.",
+  "mkt_titles": ["CMO", "VP Marketing", "Head of Demand Gen"],
+  "mkt_signals": ["Marketing intent signal 1", "Marketing intent signal 2"],
+  "mkt_email": "5-sentence cold email to a VP Marketing / CMO at ${company}. Lead with the pipeline challenge of reaching CHROs at scale. Frame GDS as the shortcut. End with a 20-minute call ask.",
+  "sales_titles": ["CRO", "VP Sales", "VP Enterprise Sales"],
+  "sales_signals": ["Sales intent signal 1", "Sales intent signal 2"],
+  "sales_email": "5-sentence cold email to a VP Sales / CRO at ${company}. Open with the problem of long CHRO sales cycles. Frame GDS forums as a way to compress pipeline timelines. Soft close on a discovery call."
+}
+
+Make all signals and emails specific to ${company}'s actual market position, buyer, and product. No generic placeholders.`;
+
+  const RIGHT_SYSTEM = `You are a B2B go-to-market analyst. For any HR tech or HR services company, identify the exact buyer titles that company sells into — the people at their CUSTOMERS who sign contracts and champion the product. Return ONLY valid JSON, no markdown, no explanation.`;
+
+  const rightPrompt = `Company: "${company}" — an HR tech or HR services vendor.
+
+Identify the exact titles this company sells INTO (their customers' decision-makers and influencers), grouped by buying role.
+
+Return ONLY this JSON (no markdown, no backticks):
+{
+  "primary": ["Title 1", "Title 2", "Title 3"],
+  "secondary": ["Title A", "Title B", "Title C"],
+  "influenced": ["Title X", "Title Y"],
+  "why": "One sentence on what business problem drives their buyers to purchase.",
+  "gds_match": "One sentence on why a CHRO at an enterprise company attending a GDS forum is relevant to this vendor."
+}
+
+Rules:
+- primary: 3-5 titles — the economic buyers who sign or approve the contract
+- secondary: 3-5 titles — strong influencers or technical buyers involved in the decision
+- influenced: 2-4 titles — people who use the product or are consulted but don't sign
+- All titles must reflect ${company}'s ACTUAL buyer personas based on their real product and market
+- Be specific: not just "HR Leader" but "VP Talent Acquisition" or "Head of Total Rewards"`;
+
+  try {
+    // Run all 3 calls in parallel
+    const [fitText, leftText, rightText] = await Promise.all([
+      callClaude(FIT_SYSTEM, fitPrompt, 300),
+      callClaude(LEFT_SYSTEM, leftPrompt, 1200),
+      callClaude(RIGHT_SYSTEM, rightPrompt, 500)
+    ]);
+
+    clearTimers();
+    document.getElementById('loadingEl').classList.remove('visible');
+
+    // Parse fit score
+    let fitJSON = extractJSON(fitText);
+    if (!fitJSON) throw new Error('Could not parse fit score. Please try again.');
+    let fitData;
+    try { fitData = JSON.parse(fitJSON); } catch(e) { throw new Error('Invalid fit score JSON.'); }
+    if (fitData.total_score === 0) fitData.total_score = 50;
+
+    // Parse left panel
+    let leftData = {};
+    try {
+      const lj = extractJSON(leftText);
+      if (lj) leftData = JSON.parse(lj);
+    } catch(e) { leftData = {}; }
+
+    // Parse right panel (buyer titles)
+    let rightData = {};
+    try {
+      const rj = extractJSON(rightText);
+      if (rj) rightData = JSON.parse(rj);
+    } catch(e) { rightData = {}; }
+
+    renderFitCard(fitData);
+    renderLeftPanel(leftData);
+    renderRightPanel(rightData);
+
+    document.getElementById('resultEl').classList.add('visible');
+    if (juneMode) {
+      document.getElementById('juneBanner').classList.add('visible');
+    }
+
+  } catch(err) {
+    showError(err.message);
+  }
+
+  document.getElementById('scoreBtn').disabled = false;
+}
+
+function quick(name) {
+  document.getElementById('coInput').value = name;
+  runScore();
+}
+
+function resetTool() {
+  document.getElementById('resultEl').classList.remove('visible');
+  document.getElementById('errorEl').classList.remove('visible');
+  document.getElementById('idleState').style.display = 'flex';
+  document.getElementById('coInput').value = '';
+  document.getElementById('scoreBtn').disabled = false;
+  document.getElementById('coInput').focus();
+}
+
+document.getElementById('coInput').addEventListener('keydown', e => { if (e.key === 'Enter') runScore(); });
+</script>
+</body>
+</html>
