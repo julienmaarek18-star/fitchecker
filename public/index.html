@@ -1111,9 +1111,7 @@ function toggleJune() {
   });
 }
 
-const API_URL = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
-  ? 'https://fitchecker-rho.vercel.app/api/claude'
-  : '/api/claude';
+const API_URL = 'https://fitchecker-rho.vercel.app/api/claude';
 
 async function callClaude(systemPrompt, userPrompt, maxTok = 900) {
   const r = await fetch(API_URL, {
